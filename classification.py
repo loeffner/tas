@@ -13,13 +13,23 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import GridSearchCV
 
 bssid_file = 'bssids.csv'
 
 car_files = [('auto_gang_hinten', 'gang_hinten'), ('auto_gang_lab', 'gang_lab'), ('auto_gang_notaus', 'gang_notaus'), ('auto_kreuz', 'kreuz'), ('auto_lab_hinten', 'lab_hinten'), ('auto_lab_vorne', 'lab_vorne'), ('auto_treppen', 'treppen')]
 car_files_2 = [('auto_gang_hinten_2', 'gang_hinten'), ('auto_gang_lab_2', 'gang_lab'), ('auto_gang_notaus_2', 'gang_notaus'), ('auto_kreuz_2', 'kreuz'), ('auto_lab_hinten_2', 'lab_hinten'), ('auto_lab_vorne_2', 'lab_vorne'), ('auto_treppen_2', 'treppen')]
-car_files_comb = [(r'data\auto_gang_hinten_comb', 'gang_hinten'), (r'data\auto_gang_lab_comb', 'gang_lab'), (r'data\auto_gang_notaus_comb', 'gang_notaus'), (r'data\auto_kreuz_comb', 'kreuz'), (r'data\auto_lab_hinten_comb', 'lab_hinten'), (r'data\auto_lab_vorne_comb', 'lab_vorne'), (r'data\auto_treppen_comb', 'treppen')]
+# car_files_comb = [(r'data\auto_gang_hinten_comb', ('gang_hinten', -9.6, 15.9)), (r'data\auto_gang_lab_comb', ('gang_lab', -2.8, -0.6)), (r'data\auto_gang_notaus_comb', ('gang_notaus', 4.3, 14.9)), (r'data\auto_kreuz_comb', ('kreuz', 2, 10.5)), (r'data\auto_lab_hinten_comb', ('lab_hinten', -2.3, -8.4)), (r'data\auto_lab_vorne_comb', ('lab_vorne', 00.8, -5)), (r'data\auto_treppen_comb', ('treppen', -6.8, 8.6))]
+car_files_comb = [(r'data\auto_gang_hinten_comb', 'gang_hinten', (r'data\auto_gang_lab_comb', 'gang_lab'), (r'data\auto_gang_notaus_comb', 'gang_notaus'), (r'data\auto_kreuz_comb', 'kreuz'), (r'data\auto_lab_hinten_comb', 'lab_hinten'), (r'data\auto_lab_vorne_comb', 'lab_vorne'), (r'data\auto_treppen_comb', ('treppen', -6.8, 8.6))]
 laptop_files = [('lab_vorne.csv', 'lab_vorne'), ('lab_hinten.csv', 'lab_hinten'), ('gang_lab.csv', 'gang_lab'), ('gang_notaus.csv', 'gang_notaus'), ('gang_hinten.csv', 'gang_hinten'), ('treppen.csv', 'treppen')]
+coords = {  'gang_hinten':  (-9.6, 15.9),
+            'gang_lab':     (-2.8, -0.6),
+            'gang_notaus':  (4.3, 14.9),
+            'kreuz':        (2, 10.5),
+            'lab_hinten':   (-1.5, -8.4),
+            'lab_vorne':    (1.5, -5),
+            'treppen':      (-6.8, 8.6) }
+
 
 # Load data from a data file to a numpy array
 def load(data_file, label):
@@ -126,6 +136,7 @@ if __name__=='__main__':
     print('Training MLP Classifier with the following layer - design', layers)
     mlp = MLPClassifier(hidden_layer_sizes=layers, max_iter=200, activation='tanh', solver='lbfgs', alpha=0.1, verbose=False)
     mlp.fit(train_spls, train_lbls)
+    
 
     err_knn= 0
     err_l_knn = []

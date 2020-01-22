@@ -23,7 +23,14 @@ cmd = 'sudo iwlist ' + interface + ' scan'
 bssid_file = 'bssids.csv'
 
 # data files
-car_files_comb = [(r'data\auto_gang_hinten_comb', 'gang_hinten'), (r'data\auto_gang_lab_comb', 'gang_lab'), (r'data\auto_gang_notaus_comb', 'gang_notaus'), (r'data\auto_kreuz_comb', 'kreuz'), (r'data\auto_lab_hinten_comb', 'lab_hinten'), (r'data\auto_lab_vorne_comb', 'lab_vorne'), (r'data\auto_treppen_comb', 'treppen')]
+car_files_comb = [(r'data\auto_gang_hinten_comb', 'gang_hinten', (r'data\auto_gang_lab_comb', 'gang_lab'), (r'data\auto_gang_notaus_comb', 'gang_notaus'), (r'data\auto_kreuz_comb', 'kreuz'), (r'data\auto_lab_hinten_comb', 'lab_hinten'), (r'data\auto_lab_vorne_comb', 'lab_vorne'), (r'data\auto_treppen_comb', ('treppen', -6.8, 8.6))]
+coords = {  'gang_hinten':  (-9.6, 15.9),
+            'gang_lab':     (-2.8, -0.6),
+            'gang_notaus':  (4.3, 14.9),
+            'kreuz':        (2, 10.5),
+            'lab_hinten':   (-1.5, -8.4),
+            'lab_vorne':    (1.5, -5),
+            'treppen':      (-6.8, 8.6) }
 
 class PoseSetter(rospy.SubscribeListener):
     def __init__(self, x, y, cov, stamp, publish_time):
@@ -151,10 +158,10 @@ for j, bssid in enumerate(bssids):
 
 positive(signal)
 pred = pca_knn.predict(pca.transform(scaler.transform(signal.reshape(1, -1))))
-print(pred)
+print(pred, coords[pred])
 
-x = 1.85
-y = 10.4
+x = coords[pred][0]
+y = coords[pred][1]
 pose = map(float, rospy.myargv()[1:4])
 cov = map(float, rospy.myargv()[4:6])
 t_stamp = rospy.Time()
